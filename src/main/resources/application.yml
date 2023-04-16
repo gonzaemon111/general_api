@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/general_api_development
+    username: root
+    password:
+server:
+  port: 8081

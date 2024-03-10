@@ -1,0 +1,29 @@
+name: PR Check
+
+env:
+  TZ: 'Asia/Tokyo'
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Build With Maven
+        run: ./mvnw clean package
+
+      - name: Run Test With Maven
+        run: ./mvnw clean test

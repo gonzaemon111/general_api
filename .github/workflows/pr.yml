@@ -19,7 +19,7 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD:
-          MYSQL_DATABASE: hoge
+          MYSQL_DATABASE: general_api_development
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         options: --health-cmd "mysqladmin ping -h localhost" --health-interval 10s --health-timeout 5s --health-retries 5
 

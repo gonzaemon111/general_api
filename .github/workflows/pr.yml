@@ -12,6 +12,17 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD:
+          MYSQL_DATABASE: hoge
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 

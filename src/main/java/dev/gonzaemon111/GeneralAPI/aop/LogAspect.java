@@ -15,12 +15,10 @@ public class LogAspect {
     @Before("execution(* dev.gonzaemon111.GeneralAPI.*.*.*(..))")
     public void startLog(JoinPoint jp){
       log.info(jp.getSignature().getDeclaringType().getSimpleName() + "クラスの" + jp.getSignature().getName() + "メソッドを開始します");
-      System.out.println(jp.getSignature().getDeclaringType().getSimpleName() + "クラスの" + jp.getSignature().getName() + "メソッドを開始します");
     }
     //AOP実装
     @After("within(dev.gonzaemon111.GeneralAPI.*.*.*)")
     public void endLog(JoinPoint jp) {
       log.info(jp.getSignature().getDeclaringType().getSimpleName() + "クラスの" + jp.getSignature().getName() + "メソッドを終了します");
-      System.out.println(jp.getSignature().getDeclaringType().getSimpleName() + "クラスの" + jp.getSignature().getName() + "メソッドを終了します");
     }
 }

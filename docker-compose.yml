@@ -1,0 +1,26 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "10833:5432"
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: general
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: general_api_development
+    restart: always
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - 8888:80
+    volumes:
+      - ./tmp/pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    depends_on:
+      - postgres
+    restart: always

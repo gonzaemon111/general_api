@@ -13,15 +13,14 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
     services:
-      mysql:
-        image: mysql:5.7
+      postgres:
+        image: postgres
         ports:
-          - 3306:3306
+          - 10833:5432
         env:
-          MYSQL_ROOT_PASSWORD:
-          MYSQL_DATABASE: general_api_development
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 10s --health-timeout 5s --health-retries 5
+          POSTGRES_DB: general_api_development
+          POSTGRES_USER: general
+          POSTGRES_PASSWORD: password
 
     steps:
       - uses: actions/checkout@v4

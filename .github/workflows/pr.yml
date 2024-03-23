@@ -35,6 +35,72 @@ jobs:
       - name: Run Test With Maven
         run: ./mvnw clean test
 
+      - name: Execute PITest
+        run: |
+          MUTATION_TEST=$(./mvnw test-compile org.pitest:pitest-maven:mutationCoverage)
+          PIT_RESULT=${MUTATION_TEST##*Task :pitest}
+          SUMMARY=${PIT_RESULT##*- Statistics}
+          echo "summary_mutation=$(echo ${SUMMARY%%B*})" >> $GITHUB_OUTPUT
+        id: mutation-test-execution
+        shell: bash
+
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: reports-artifact
+          path: target/pit-reports
+          retention-days: 1
+
+      - uses: actions/github-script@v7
+        id: get_issue_number
+        with:
+          script: |
+            if (context.issue.number) {
+              // Return issue number if present
+              return context.issue.number;
+            } else {
+              // Otherwise return issue number from commit
+              return (
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+            }
+          result-encoding: string
+
+      - name: Comment on Pull Request
+        uses: actions/github-script@v7
+        env:
+          PR: ${{ steps.get_issue_number.outputs.result }}
+          MUTATION: ${{ steps.mutation-test-execution.outputs.summary_mutation }}
+        with:
+          script: |
+            const mutationSummary = "${{ env.MUTATION }}"
+            if (!mutationSummary) {
+              //if the value is empty, undefined or null only the error is log
+              console.error("Empty Mutation Summary")
+            } else {
+              const prNumber = '${{ env.PR }}';
+              const repoOwner = context.repo.owner;
+              const repoName = context.repo.repo;
+              const mutationSummaryFormatted = mutationSummary.replace(/=/g, '').replace(/>>/g, '\n')
+              const message = "🧟‍♀ Mutation Testing Summary ️🧟‍♀️\n" +
+                "================================ \n" +
+                mutationSummaryFormatted +
+                "\n" +
+                "Check artifacts for the complete report"
+
+              // Post comment
+              await github.rest.issues.createComment({
+                owner: repoOwner,
+                repo: repoName,
+                issue_number: prNumber,
+                body: message
+              });
+            }
+
   build:
     runs-on: ubuntu-latest
     env:

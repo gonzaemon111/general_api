@@ -4,6 +4,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+    open-in-view: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://127.0.0.1:10833/general_api_development
